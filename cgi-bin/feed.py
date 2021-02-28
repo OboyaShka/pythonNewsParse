@@ -23,7 +23,7 @@ print("""<!doctype html>
 <body>
 <section class="grid">
 """)
-#'https://meduza.io/rss2/all', 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss'
+
 rss_urls=[
         {  'rss_link': 'https://meduza.io/rss2/all',
            'rss_name': 'Медуза',
@@ -44,8 +44,6 @@ rss_urls=[
            'rss_name': 'ТАСС',
          'site_link': 'https://tass.ru'},
           ]
-# for line in open("../data/urls.txt", "r").read().split("\n"):
-#     rss_urls.append(lin
 
 news = []
 
@@ -69,8 +67,6 @@ for url in rss_urls:
             'img_href': img_href
         })
         news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
-
-#news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
 
 for new in news:
     if new.get('img_href').endswith('.jpg'):
