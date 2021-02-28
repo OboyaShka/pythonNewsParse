@@ -22,33 +22,57 @@ print("""<!doctype html>
 </head>
 <body>""")
 #'https://meduza.io/rss2/all', 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss'
-rss_urls=[{'rss_link': 'https://meduza.io/rss2/all',
-           'rss_name': 'Медуза'},
-            {'rss_link': 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss',
-           'rss_name': 'РБК Новости'},
-            {'rss_link': 'https://ria.ru/export/rss2/archive/index.xml',
-           'rss_name': 'РИА Новости'},
-        {'rss_link': 'http://news.rambler.ru/rss/world/',
-           'rss_name': 'Рамблер'}]
+rss_urls=[
+        # {'rss_link': 'https://meduza.io/rss2/all',
+        #    'rss_name': 'Медуза'},
+        #     {'rss_link': 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss',
+        #    'rss_name': 'РБК Новости'},
+        #     {'rss_link': 'https://ria.ru/export/rss2/archive/index.xml',
+        #    'rss_name': 'РИА Новости'},
+        # {'rss_link': 'http://news.rambler.ru/rss/world/',
+        #    'rss_name': 'Рамблер Новости'},
+        {'rss_link': 'https://lenta.ru/rss',
+           'rss_name': 'Lenta.ru'}
+          ]
 # for line in open("../data/urls.txt", "r").read().split("\n"):
 #     rss_urls.append(lin
 
+news = []
+
 for url in rss_urls:
     parser = feedparser.parse(url.get('rss_link'))
-    news = []
+
 
     for entry in parser.entries:
-        new_title = unicodedata.normalize("NFKD", entry.title)
-        new_description = unicodedata.normalize("NFKD", entry.description, )
-        new_link = unicodedata.normalize("NFKD", entry.link)
         new_published = unicodedata.normalize("NFKD", entry.published)
         published_time = datetime.strptime(new_published, '%a, %d %b %Y %X %z')
-        new_published =  str(published_time.strftime('%Y-%m-%d %X'))
-        print('<div class="news"><h1>'+ new_title, '</h1>'
-              '<p>'+ new_description, '</p>'
-              '<p>Источник: '+ url.get('rss_name'), '</p>'
-              '<a href='+ new_link,'>Подробнее</a>'
-              '<p>'+ new_published, '</p></div>')
+        img_href = ""
+        if entry.enclosures:
+            img_href = (entry.enclosures[0].get('href'))
+        news.append({
+            'title': unicodedata.normalize("NFKD", entry.title),
+            'description': unicodedata.normalize("NFKD", entry.description, ),
+            'origin_author': url.get('rss_name'),
+            'link': unicodedata.normalize("NFKD", entry.link),
+            'published': str(published_time.strftime('%Y-%m-%d %X')),
+            'img_href': img_href
+        })
+        news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
+
+#news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
+
+for new in news:
+    hidden = ""
+    if new.get('img_href') == "":
+        hidden = "hidden"
+    else: hidden = "visible"
+
+    print('<div class="news"><h1>' + new.get('title'), '</h1>'
+          '<img src='+ new.get('img_href'),' visibility="'+ hidden,'"/>'                       
+          '<p>'+ new.get('description'), '</p>' 
+          '<p>Источник: '+ new.get('origin_author'), '</p>'
+          '<a href='+ new.get('link'),'>Подробнее</a>'
+          '<p>'+ new.get('published'), '</p></div>')
 
 
 print("""</body>
