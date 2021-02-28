@@ -25,16 +25,21 @@ print("""<!doctype html>
 """)
 #'https://meduza.io/rss2/all', 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss'
 rss_urls=[
-        {'rss_link': 'https://meduza.io/rss2/all',
-           'rss_name': 'Медуза'},
-        #     {'rss_link': 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss',
-        #    'rss_name': 'РБК Новости'},
-        #     {'rss_link': 'https://ria.ru/export/rss2/archive/index.xml',
-        #    'rss_name': 'РИА Новости'},
-        # {'rss_link': 'http://news.rambler.ru/rss/world/',
-        #    'rss_name': 'Рамблер Новости'},
-        # {'rss_link': 'https://lenta.ru/rss',
-        #    'rss_name': 'Lenta.ru'}
+        {  'rss_link': 'https://meduza.io/rss2/all',
+           'rss_name': 'Медуза',
+           'site_link': 'https://meduza.io/'},
+            {'rss_link': 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss',
+           'rss_name': 'РБК Новости',
+            'site_link': 'https://www.rbc.ru/'},
+            {'rss_link': 'https://ria.ru/export/rss2/archive/index.xml',
+           'rss_name': 'РИА Новости',
+             'site_link': 'https://ria.ru/'},
+        {'rss_link': 'http://news.rambler.ru/rss/world/',
+           'rss_name': 'Рамблер Новости',
+         'site_link': 'https://news.rambler.ru/'},
+        {'rss_link': 'https://lenta.ru/rss',
+           'rss_name': 'Lenta.ru',
+         'site_link': 'https://lenta.ru/'}
           ]
 # for line in open("../data/urls.txt", "r").read().split("\n"):
 #     rss_urls.append(lin
@@ -56,7 +61,8 @@ for url in rss_urls:
             'description': unicodedata.normalize("NFKD", entry.description, ),
             'origin_author': url.get('rss_name'),
             'link': unicodedata.normalize("NFKD", entry.link),
-            'published': str(published_time.strftime('%Y-%m-%d %X')),
+            'link_site': url.get('site_link'),
+            'published': str(published_time.strftime('%d.%m.%Y %H:%M')),
             'img_href': img_href
         })
         news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
@@ -64,13 +70,16 @@ for url in rss_urls:
 #news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
 
 for new in news:
-    hidden = ""
     if new.get('img_href') == "":
-        hidden = "hidden"
-    else: hidden = "visible"
+        image_url = "../images/novosti.jpg"
+    else:
+        if new.get('img_href').endswith('.mp4'):
+            image_url = "../images/novosti.jpg"
+        else: image_url = new.get('img_href')
+
     print('<article class="grid-item">'
         '<div class="image">'
-            '<img src='+ new.get('img_href'),' />'
+            '<img src='+ image_url,' />'
         '</div>'
         '<div class="info">'
             '<h2>' + new.get('title'), '</h2>'
@@ -78,7 +87,7 @@ for new in news:
                 '<p>'+ new.get('description'), '</p>'
             '</div>'
             '<div class="info-bottom">'
-                '<p class="info-author">'+ new.get('origin_author'), '</p>'
+                '<a href='+ new.get('link_site'),' class="info-author">'+ new.get('origin_author'), '</a>'
                 '<p>'+ new.get('published'), '</p>'
             '</div>'                                    
             '<div class="button-wrap">'
