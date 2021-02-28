@@ -20,19 +20,21 @@ print("""<!doctype html>
     <link rel="stylesheet" href="../css/main.css" type="text/css" charset="utf-8"></link>
     <title>Новости</title>
 </head>
-<body>""")
+<body>
+<section class="grid">
+""")
 #'https://meduza.io/rss2/all', 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss'
 rss_urls=[
-        # {'rss_link': 'https://meduza.io/rss2/all',
-        #    'rss_name': 'Медуза'},
+        {'rss_link': 'https://meduza.io/rss2/all',
+           'rss_name': 'Медуза'},
         #     {'rss_link': 'http://static.feed.rbc.ru/rbc/logical/footer/news.rss',
         #    'rss_name': 'РБК Новости'},
         #     {'rss_link': 'https://ria.ru/export/rss2/archive/index.xml',
         #    'rss_name': 'РИА Новости'},
         # {'rss_link': 'http://news.rambler.ru/rss/world/',
         #    'rss_name': 'Рамблер Новости'},
-        {'rss_link': 'https://lenta.ru/rss',
-           'rss_name': 'Lenta.ru'}
+        # {'rss_link': 'https://lenta.ru/rss',
+        #    'rss_name': 'Lenta.ru'}
           ]
 # for line in open("../data/urls.txt", "r").read().split("\n"):
 #     rss_urls.append(lin
@@ -66,15 +68,27 @@ for new in news:
     if new.get('img_href') == "":
         hidden = "hidden"
     else: hidden = "visible"
+    print('<article class="grid-item">'
+        '<div class="image">'
+            '<img src='+ new.get('img_href'),' />'
+        '</div>'
+        '<div class="info">'
+            '<h2>' + new.get('title'), '</h2>'
+            '<div class="info-text">'
+                '<p>'+ new.get('description'), '</p>'
+            '</div>'
+            '<div class="info-bottom">'
+                '<p class="info-author">'+ new.get('origin_author'), '</p>'
+                '<p>'+ new.get('published'), '</p>'
+            '</div>'                                    
+            '<div class="button-wrap">'
+                '<a class="atuin-btn" href='+ new.get('link'),'>Подробнее</a>'
+            '</div>'
+        '</div>'
+    '</article>')
 
-    print('<div class="news"><h1>' + new.get('title'), '</h1>'
-          '<img src='+ new.get('img_href'),' visibility="'+ hidden,'"/>'                       
-          '<p>'+ new.get('description'), '</p>' 
-          '<p>Источник: '+ new.get('origin_author'), '</p>'
-          '<a href='+ new.get('link'),'>Подробнее</a>'
-          '<p>'+ new.get('published'), '</p></div>')
 
 
-print("""</body>
+print("""</section></body>
 </html>""")
 
