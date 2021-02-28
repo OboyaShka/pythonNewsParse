@@ -39,7 +39,10 @@ rss_urls=[
          'site_link': 'https://news.rambler.ru/'},
         {'rss_link': 'https://lenta.ru/rss',
            'rss_name': 'Lenta.ru',
-         'site_link': 'https://lenta.ru/'}
+         'site_link': 'https://lenta.ru/'},
+        {'rss_link': 'http://www.itar-tass.com/rss/all.xml',
+           'rss_name': 'ТАСС',
+         'site_link': 'https://tass.ru'},
           ]
 # for line in open("../data/urls.txt", "r").read().split("\n"):
 #     rss_urls.append(lin
@@ -62,7 +65,7 @@ for url in rss_urls:
             'origin_author': url.get('rss_name'),
             'link': unicodedata.normalize("NFKD", entry.link),
             'link_site': url.get('site_link'),
-            'published': str(published_time.strftime('%d.%m.%Y %H:%M')),
+            'published': str(published_time.strftime('%Y-%m-%d %H:%M')),
             'img_href': img_href
         })
         news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
@@ -70,12 +73,12 @@ for url in rss_urls:
 #news.sort(key=lambda dictionary: dictionary['published'], reverse=True)
 
 for new in news:
-    if new.get('img_href') == "":
-        image_url = "../images/novosti.jpg"
+    if new.get('img_href').endswith('.jpg'):
+        image_url = new.get('img_href')
     else:
-        if new.get('img_href').endswith('.mp4'):
-            image_url = "../images/novosti.jpg"
-        else: image_url = new.get('img_href')
+        image_url = "../images/novosti.jpg"
+    published_time = datetime.strptime(new.get('published'), '%Y-%m-%d %H:%M')
+
 
     print('<article class="grid-item">'
         '<div class="image">'
@@ -88,7 +91,7 @@ for new in news:
             '</div>'
             '<div class="info-bottom">'
                 '<a href='+ new.get('link_site'),' class="info-author">'+ new.get('origin_author'), '</a>'
-                '<p>'+ new.get('published'), '</p>'
+                '<p>'+ str(published_time.strftime('%H:%M %d.%m.%Y ')), '</p>'
             '</div>'                                    
             '<div class="button-wrap">'
                 '<a class="atuin-btn" href='+ new.get('link'),'>Подробнее</a>'
